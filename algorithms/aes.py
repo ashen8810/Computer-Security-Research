@@ -1,16 +1,18 @@
-"""AES encryption using PyCryptodome."""
+"""AES encryption using OpenSSL (via the cryptography package)."""
 
 from __future__ import annotations
 
 import random
 
-from Crypto.Cipher import AES
+from cryptography.hazmat.primitives.ciphers.algorithms import AES
 
+from algorithms._block_cipher import Transform
 from algorithms._block_cipher import decrypt as _decrypt
 from algorithms._block_cipher import encrypt as _encrypt
 from algorithms._block_cipher import generate_bytes
+from algorithms._block_cipher import openssl_transform
 
-BLOCK_SIZE = AES.block_size
+BLOCK_SIZE = AES.block_size // 8
 KEY_LENGTHS = (16, 24, 32)
 
 
@@ -23,11 +25,15 @@ def _validate_key(key: bytes) -> None:
         raise ValueError("AES keys must be 16, 24, or 32 bytes.")
 
 
+def _transform(key: bytes) -> Transform:
+    return openssl_transform(AES, key, BLOCK_SIZE)
+
+
 def encrypt(plaintext: str, key: bytes, mode: str = "CBC", iv: bytes | None = None) -> bytes:
     _validate_key(key)
-    return _encrypt(AES, BLOCK_SIZE, plaintext, key, mode, iv)
+    return _encrypt(_transform(key), BLOCK_SIZE, plaintext, mode, iv)
 
 
 def decrypt(ciphertext: bytes, key: bytes, mode: str = "CBC", iv: bytes | None = None) -> bytes:
     _validate_key(key)
-    return _decrypt(AES, BLOCK_SIZE, ciphertext, key, mode, iv)
+    return _decrypt(_transform(key), BLOCK_SIZE, ciphertext, mode, iv)

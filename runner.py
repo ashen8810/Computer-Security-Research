@@ -11,7 +11,23 @@ from pathlib import Path
 from types import ModuleType
 from typing import Sequence
 
-from algorithms import aes, blowfish, camellia, des, triple_des
+from algorithms import (
+    aes,
+    anubis,
+    aria,
+    camellia,
+    cast256,
+    clefia,
+    kuznyechik,
+    lea,
+    mars,
+    noekeon,
+    rc6,
+    seed,
+    serpent,
+    sm4,
+    twofish,
+)
 from utils.data_generator import generate_plaintexts
 
 DEFAULT_OUTPUT = Path("datasets") / "encryption_dataset.csv"
@@ -35,18 +51,28 @@ class AlgorithmSpec:
     modes: tuple[str, ...]
 
 
+ALL_MODES = ("ECB", "CBC", "CTR")
+
 ALGORITHM_REGISTRY: dict[str, AlgorithmSpec] = {
-    "AES": AlgorithmSpec("AES", "SPN", aes, ("ECB", "CBC", "CTR")),
-    "DES": AlgorithmSpec("DES", "Feistel", des, ("ECB", "CBC", "CTR")),
-    "Triple DES": AlgorithmSpec(
-        "Triple DES", "Feistel", triple_des, ("ECB", "CBC", "CTR")
+    "AES": AlgorithmSpec("AES", "SPN", aes, ALL_MODES),
+    "Camellia": AlgorithmSpec("Camellia", "Feistel", camellia, ALL_MODES),
+    "SM4": AlgorithmSpec("SM4", "Unbalanced Feistel", sm4, ALL_MODES),
+    "SEED": AlgorithmSpec("SEED", "Feistel", seed, ALL_MODES),
+    "ARIA": AlgorithmSpec("ARIA", "SPN", aria, ALL_MODES),
+    "Serpent": AlgorithmSpec("Serpent", "SPN", serpent, ALL_MODES),
+    "Twofish": AlgorithmSpec("Twofish", "Feistel", twofish, ALL_MODES),
+    "RC6": AlgorithmSpec("RC6", "Generalized Feistel / ARX", rc6, ALL_MODES),
+    "CAST-256": AlgorithmSpec("CAST-256", "Generalized Feistel", cast256, ALL_MODES),
+    "Kuznyechik": AlgorithmSpec("Kuznyechik", "SPN", kuznyechik, ALL_MODES),
+    "MARS": AlgorithmSpec(
+        "MARS", "Generalized / heterogeneous Feistel", mars, ALL_MODES
     ),
-    "Blowfish": AlgorithmSpec(
-        "Blowfish", "Feistel", blowfish, ("ECB", "CBC", "CTR")
+    "CLEFIA": AlgorithmSpec(
+        "CLEFIA", "Generalized Feistel (Type-2)", clefia, ALL_MODES
     ),
-    "Camellia": AlgorithmSpec(
-        "Camellia", "Feistel", camellia, ("ECB", "CBC", "CTR")
-    ),
+    "LEA": AlgorithmSpec("LEA", "ARX", lea, ALL_MODES),
+    "Anubis": AlgorithmSpec("Anubis", "SPN (involutional)", anubis, ALL_MODES),
+    "Noekeon": AlgorithmSpec("Noekeon", "SPN", noekeon, ALL_MODES),
 }
 
 
