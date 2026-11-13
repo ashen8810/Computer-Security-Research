@@ -1,1 +1,8 @@
 cryptography>=47.0.0
+
+# research/block_cipher_identification (HKNNRF replication)
+pycryptodome>=3.20
+numpy>=1.26
+scipy>=1.11
+pandas>=2.0
+scikit-learn>=1.3
