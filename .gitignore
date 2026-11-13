@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Ad-hoc results from re-running the research scripts; keep the recorded run.
+research/block_cipher_identification/**/*.csv
+!research/block_cipher_identification/results/results_full.csv
